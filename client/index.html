@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification Service</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Notification Service</h1>
+
+  <div>
+    <label for="topic-select">Choose a topic:</label>
+    <select id="topic-select">
+      <option value="topic1">Topic 1</option>
+      <option value="topic2">Topic 2</option>
+      <option value="topic3">Topic 3</option>
+    </select>
+    <button id="subscribe-btn">Subscribe</button>
+    <button id="unsubscribe-btn">Unsubscribe</button>
+  </div>
+
+  <div id="notifications"></div>
+
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
