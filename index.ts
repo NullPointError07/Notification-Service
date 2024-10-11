@@ -1,17 +1,11 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import { NotificationRouter } from "./src/routes/notificationRouter.js";
-import { notificationSocket } from "./src/sockets/notificationSocket.js";
+import { registerUser, removeUser } from "./src/services/socket";
 
-// Initialize Express
 const app = express();
 const server = http.createServer(app);
-
 app.use(express.json());
-
-// lets just have a router for notification
-app.use("/", NotificationRouter);
 
 const io = new Server(server, {
   cors: {
@@ -20,8 +14,19 @@ const io = new Server(server, {
   },
 });
 
-// lets take notification socket elsewhere , modularized
-notificationSocket(io);
+io.on("connection", (socket) => {
+  console.log("New user connected:", socket.id);
+
+  // Register user with their ID
+  socket.on("register", (userId: string) => {
+    registerUser(socket, userId);
+  });
+
+  // Handle user disconnection
+  socket.on("disconnect", () => {
+    removeUser(socket.id);
+  });
+});
 
 // Start the server
 const PORT = process.env.PORT || 3000;

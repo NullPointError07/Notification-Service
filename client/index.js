@@ -1,46 +1,28 @@
-const socket = io("http://localhost:3000");
+const socket = io();
 
-const topicSelect = document.getElementById("topic-select");
-const subscribeBtn = document.getElementById("subscribe-btn");
-const unsubscribeBtn = document.getElementById("unsubscribe-btn");
-const notificationsDiv = document.getElementById("notifications");
-
-// Subscribe to a topic
-subscribeBtn.addEventListener("click", () => {
-  const topic = topicSelect.value;
-  socket.emit("subscribe", topic);
+// Update connection status
+socket.on("connect", () => {
+  console.log("Connected to server");
 });
 
-// Unsubscribe from a topic
-unsubscribeBtn.addEventListener("click", () => {
-  const topic = topicSelect.value;
-  socket.emit("unsubscribe", topic);
+// Handle notifications
+socket.on("notification", (data) => {
+  const notificationDiv = document.getElementById("notifications");
+  const newNotification = document.createElement("div");
+  newNotification.classList.add("notification");
+  newNotification.innerText = `User ${data.userId}: ${data.message}`;
+  notificationDiv.appendChild(newNotification);
 });
 
-// Display notifications received from the server
-socket.on("receiveNotification", ({ message }) => {
-  const notification = document.createElement("div");
-  notification.classList.add("notification");
-  notification.textContent = `Notification: ${message}`;
-  notificationsDiv.appendChild(notification);
-});
+// Send notification
+document.getElementById("sendNotificationBtn").addEventListener("click", () => {
+  const userId = document.getElementById("userIdInput").value;
+  const message = document.getElementById("notificationInput").value;
 
-// Handle subscription success
-socket.on("subscriptionSuccess", (msg) => {
-  alert(msg);
-});
-
-// Handle unsubscription success
-socket.on("unsubscriptionSuccess", (msg) => {
-  alert(msg);
-});
-
-// Handle subscription error
-socket.on("subscriptionError", (msg) => {
-  alert(msg);
-});
-
-// Handle unsubscription error
-socket.on("unsubscriptionError", (msg) => {
-  alert(msg);
+  if (userId && message) {
+    socket.emit("sendNotification", { userId, message });
+    document.getElementById("notificationInput").value = ""; // Clear input field
+  } else {
+    alert("Please enter both User ID and Notification Message");
+  }
 });

@@ -1,9 +1,14 @@
-import { Router, Request, Response } from "express";
+import express, { Router } from "express";
+import { sendNotificationToMultipleUsers, sendNotificationToSingleUser } from "../controller/notification";
 
-const router = Router();
+const router: Router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
-  res.send("Notification Service is running...");
-});
+export default (io: any): Router => {
+  // Route for sending notification to a single user
+  router.post("/send-notification", sendNotificationToSingleUser(io));
 
-export { router as NotificationRouter };
+  // Route for sending notification to multiple users
+  router.post("/send-multiple-notifications", sendNotificationToMultipleUsers(io));
+
+  return router;
+};

@@ -10,16 +10,12 @@
   <h1>Notification Service</h1>
 
   <div>
-    <label for="topic-select">Choose a topic:</label>
-    <select id="topic-select">
-      <option value="topic1">Topic 1</option>
-      <option value="topic2">Topic 2</option>
-      <option value="topic3">Topic 3</option>
-    </select>
-    <button id="subscribe-btn">Subscribe</button>
-    <button id="unsubscribe-btn">Unsubscribe</button>
+    <input type="text" id="userIdInput" placeholder="Enter User ID" />
+    <input type="text" id="notificationInput" placeholder="Enter Notification Message" />
+    <button id="sendNotificationBtn">Send Notification</button>
   </div>
 
+  <h2>Notifications</h2>
   <div id="notifications"></div>
 
   <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
