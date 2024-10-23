@@ -1,49 +1,22 @@
 import { Request, Response } from "express";
-import { getUserSocketId } from "../services/socket";
+import { io } from "../..";
 
-interface NotificationRequest extends Request {
-  body: {
-    userId?: string;
-    userIds?: string[];
-    message: string;
-  };
-}
+// Send notification to a single user
+export const sendNotificationToUser = (req: Request, res: Response) => {
+  const { userId, message } = req.body;
 
-export const sendNotificationToSingleUser =
-  (io: any) =>
-  (req: NotificationRequest, res: Response): void => {
-    const { userId, message } = req.body;
-    const socketId = getUserSocketId(userId!);
+  // Emit the message to the specific user via Socket.IO
+  io.to(userId).emit("notification", { userId, message });
 
-    if (socketId) {
-      io.to(socketId).emit("notification", { message });
-      res.status(200).json({ success: true, message: "Notification sent to user!" });
-    } else {
-      res.status(404).json({ success: false, message: "User not found" });
-    }
-  };
+  res.status(200).json({ success: true, message: `Notification sent to user ${userId}` });
+};
 
-export const sendNotificationToMultipleUsers =
-  (io: any) =>
-  (req: NotificationRequest, res: Response): void => {
-    const { userIds, message } = req.body;
-    let notifiedUsers: string[] = [];
-    let failedUsers: string[] = [];
+// Send notification to multiple users
+export const sendNotificationToMultipleUsers = (req: Request, res: Response) => {
+  const { message } = req.body;
 
-    userIds?.forEach((userId) => {
-      const socketId = getUserSocketId(userId);
-      if (socketId) {
-        io.to(socketId).emit("notification", { message });
-        notifiedUsers.push(userId);
-      } else {
-        failedUsers.push(userId);
-      }
-    });
+  // Broadcast the message to all connected clients
+  io.emit("notification", { message });
 
-    res.status(200).json({
-      success: true,
-      message: "Notification sent to multiple users!",
-      notifiedUsers,
-      failedUsers: failedUsers.length > 0 ? failedUsers : "None",
-    });
-  };
+  res.status(200).json({ success: true, message: "Notification sent to multiple users" });
+};

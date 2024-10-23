@@ -1,11 +1,20 @@
 import express from "express";
 import http from "http";
+import cors from "cors";
 import { Server } from "socket.io";
 import { registerUser, removeUser } from "./src/services/socket";
+import { NotificationRoutes } from "./src/routes/notificationRouter";
 
 const app = express();
-const server = http.createServer(app);
 app.use(express.json());
+const server = http.createServer(app);
+
+// enabling cors for all request
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 const io = new Server(server, {
   cors: {
@@ -27,6 +36,10 @@ io.on("connection", (socket) => {
     removeUser(socket.id);
   });
 });
+
+export { io };
+
+app.use("/notification", NotificationRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
