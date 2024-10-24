@@ -4,10 +4,13 @@ import cors from "cors";
 import { Server } from "socket.io";
 import { registerUser, removeUser } from "./src/services/socket";
 import { NotificationRoutes } from "./src/routes/notificationRouter";
+import { connectDB } from "./src/db/connectDB";
 
 const app = express();
 app.use(express.json());
 const server = http.createServer(app);
+
+connectDB();
 
 // enabling cors for all request
 app.use(
