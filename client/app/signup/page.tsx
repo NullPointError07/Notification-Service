@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Signup = () => {
   const [formData, setFormData] = useState({ username: "", password: "", email: "" });
   const [message, setMessage] = useState("");
+
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,6 +23,8 @@ const Signup = () => {
 
     const data = await res.json();
     setMessage(data.message);
+
+    router.push("/login");
   };
 
   return (

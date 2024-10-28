@@ -1,10 +1,10 @@
 import { connectDB } from "@/app/lib/connectDB";
 import User from "@/app/models/user";
-import { createToken, verifyPassword } from "@/app/utils/auth";
+import { verifyPassword } from "@/app/utils/auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  await connectDB;
+  await connectDB();
 
   const { username, password } = await req.json();
 
@@ -18,6 +18,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
   }
 
-  const token = createToken(user);
-  return NextResponse.json({ token }, { status: 200 });
+  // const token = createToken(user);
+  return NextResponse.json({ user }, { status: 200 });
 }

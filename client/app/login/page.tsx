@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,7 +21,13 @@ const Login = () => {
     });
 
     const data = await res.json();
-    setMessage(data.message || "Login successful!");
+    if (data.user._id) {
+      localStorage.setItem("userId", data.user._id);
+      setMessage("Login successful!");
+      router.push("/");
+    } else {
+      setMessage(data.message || "Login failed");
+    }
   };
 
   return (
