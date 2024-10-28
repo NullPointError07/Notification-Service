@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { FaThumbsUp } from "react-icons/fa";
+import { useSocket } from "@/app/hooks/useSocket";
 
 interface Post {
   _id: string;
   post: string;
-  createdBy: { username: string };
+  createdBy: { _id: string; username: string };
   createdAt: string;
   isLiked: boolean;
 }
@@ -17,6 +18,8 @@ interface FetchPostsProps {
 
 const FetchPosts: React.FC<FetchPostsProps> = ({ refreshPosts }) => {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
+  const socket = useSocket();
 
   const fetchPosts = async () => {
     const res = await fetch("/api/posts");
@@ -24,9 +27,26 @@ const FetchPosts: React.FC<FetchPostsProps> = ({ refreshPosts }) => {
     setPosts(data);
   };
 
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    setUserId(storedUserId);
+  }, []);
+
   const handleLike = async (postId: string) => {
     await fetch(`/api/posts/${postId}/like`, { method: "POST" });
     fetchPosts();
+  };
+
+  const emitLikeEvent = async (post: Post) => {
+    handleLike(post._id);
+    const data = {
+      senderId: userId,
+      receiverId: post.createdBy._id,
+      postId: post._id,
+      type: "social",
+      message: `${post.createdBy.username} liked your post`,
+    };
+    socket?.emit("like", data);
   };
 
   useEffect(() => {
@@ -35,7 +55,7 @@ const FetchPosts: React.FC<FetchPostsProps> = ({ refreshPosts }) => {
 
   return (
     <div className="w-full max-w-6xl mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {posts.map((post) => (
+      {posts?.map((post) => (
         <div key={post._id} className="bg-white shadow-md rounded-lg p-4 flex flex-col">
           <div className="mb-2">
             <p className="text-sm text-gray-500">Posted by: {post.createdBy.username || "Anonymous"}</p>
@@ -43,7 +63,7 @@ const FetchPosts: React.FC<FetchPostsProps> = ({ refreshPosts }) => {
           </div>
           <p className="text-gray-800 flex-grow">{post.post}</p>
           <button
-            onClick={() => handleLike(post._id)}
+            onClick={() => emitLikeEvent(post)}
             className={`mt-2 p-2 rounded-md transition duration-300 ${post.isLiked ? "text-red-500" : "text-gray-600"}`}
           >
             <FaThumbsUp size={24} />

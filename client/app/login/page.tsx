@@ -23,6 +23,7 @@ const Login = () => {
     const data = await res.json();
     if (data.user._id) {
       localStorage.setItem("userId", data.user._id);
+      localStorage.setItem("username", data.user.username);
       setMessage("Login successful!");
       router.push("/");
     } else {

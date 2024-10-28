@@ -6,18 +6,24 @@ import { FiBell } from "react-icons/fi";
 
 const Navbar: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
+    const storedUserName = localStorage.getItem("username");
+    setUsername(storedUserName);
     setIsLoggedIn(!!userId);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("userId");
+    localStorage.removeItem("username");
     setIsLoggedIn(false);
     router.push("/login");
   };
+
+  console.log(isLoggedIn);
 
   return (
     <nav className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white p-4 shadow-md">
@@ -30,12 +36,19 @@ const Navbar: React.FC = () => {
         </h1>
         <div className="flex space-x-6 items-center">
           {isLoggedIn ? (
-            <button
-              onClick={handleLogout}
-              className="text-white hover:bg-opacity-70 px-4 py-2 rounded-md transition duration-300"
-            >
-              Logout
-            </button>
+            <>
+              <div className="flex items-center space-x-3">
+                <span className="bg-white text-blue-500 font-semibold px-3 py-1 rounded-full border border-blue-500">
+                  {username}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="text-white hover:bg-opacity-70 px-4 py-2 rounded-md transition duration-300"
+                >
+                  Logout
+                </button>
+              </div>
+            </>
           ) : (
             <>
               <button

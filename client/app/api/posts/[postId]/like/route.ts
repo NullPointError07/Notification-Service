@@ -2,8 +2,8 @@ import { connectDB } from "@/app/lib/connectDB";
 import Post from "@/app/models/post";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request, { params }: { params: { postId: string } }) {
-  const { postId } = params;
+export async function POST(req: Request, { params }: { params: Promise<{ postId: string }> }) {
+  const { postId } = await params;
 
   await connectDB();
 

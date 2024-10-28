@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/app/components/navbar";
+import { SocketProvider } from "@/app/context/socket";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,8 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Navbar />
-        <main className="flex flex-col items-center min-h-screen p-8 bg-gray-100">{children}</main>
+        <SocketProvider>
+          <Navbar />
+          <main className="flex flex-col items-center min-h-screen p-8 bg-gray-100">{children}</main>
+        </SocketProvider>
       </body>
     </html>
   );

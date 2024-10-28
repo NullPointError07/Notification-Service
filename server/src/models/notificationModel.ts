@@ -15,7 +15,7 @@ const NotificationSchema: Schema = new Schema(
   {
     senderId: { type: Schema.Types.ObjectId, required: true },
     receiverId: { type: Schema.Types.ObjectId, required: true },
-    type: { type: String, enum: Object.values(NotificationType), default: NotificationType.SOCIAL },
+    type: { type: String, enum: Object.values(NotificationType) },
     status: { type: String, enum: Object.values(NotificationStatus), default: NotificationStatus.UNREAD },
     message: { type: String, required: true },
   },
