@@ -9,9 +9,10 @@ interface LikeData {
   message: string;
 }
 
+// store notification data
 export async function likeNotification(data: LikeData) {
   try {
-    await NotificationModel.create(data);
+    return await NotificationModel.create(data);
   } catch (error) {
     throw new Error("failed to save notification");
   }

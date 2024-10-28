@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiBell } from "react-icons/fi";
+import { useSocket } from "../hooks/useSocket";
 
 const Navbar: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const router = useRouter();
+  const socket = useSocket();
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -23,7 +25,11 @@ const Navbar: React.FC = () => {
     router.push("/login");
   };
 
-  console.log(isLoggedIn);
+  useEffect(() => {
+    socket?.on("notification", (data) => {
+      console.log("is this the data", data);
+    });
+  }, []);
 
   return (
     <nav className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white p-4 shadow-md">

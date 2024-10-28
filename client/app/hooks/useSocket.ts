@@ -1,6 +1,15 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { SocketContext } from "../context/socket";
 
 export const useSocket = () => {
-  return useContext(SocketContext);
+  const socket = useContext(SocketContext);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (socket && userId) {
+      socket.emit("register", userId);
+    }
+  }, [socket]);
+
+  return socket;
 };

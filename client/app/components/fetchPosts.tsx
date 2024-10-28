@@ -19,6 +19,7 @@ interface FetchPostsProps {
 const FetchPosts: React.FC<FetchPostsProps> = ({ refreshPosts }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
+  const [username, setUserName] = useState<string | null>(null);
   const socket = useSocket();
 
   const fetchPosts = async () => {
@@ -29,7 +30,9 @@ const FetchPosts: React.FC<FetchPostsProps> = ({ refreshPosts }) => {
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
+    const storedUserName = localStorage.getItem("username");
     setUserId(storedUserId);
+    setUserName(storedUserName);
   }, []);
 
   const handleLike = async (postId: string) => {
@@ -39,13 +42,17 @@ const FetchPosts: React.FC<FetchPostsProps> = ({ refreshPosts }) => {
 
   const emitLikeEvent = async (post: Post) => {
     handleLike(post._id);
+
+    if (userId === post.createdBy._id) return;
+
     const data = {
       senderId: userId,
       receiverId: post.createdBy._id,
       postId: post._id,
       type: "social",
-      message: `${post.createdBy.username} liked your post`,
+      message: `${username} liked your post`,
     };
+
     socket?.emit("like", data);
   };
 
