@@ -26,7 +26,7 @@ const io = new Server(server, {
   },
 });
 
-const userSockets = new Map();
+export const userSockets = new Map();
 
 io.on("connection", (socket) => {
   console.log("New user connected:", socket.id);
@@ -47,7 +47,6 @@ io.on("connection", (socket) => {
       // Emit the notification back to the specific client
       const receiverSocketId = userSockets.get(data.receiverId);
       if (receiverSocketId) {
-        console.log("---tick tock---");
         socket.to(receiverSocketId).emit("notification", data);
       }
 
