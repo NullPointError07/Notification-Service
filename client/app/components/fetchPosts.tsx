@@ -24,7 +24,7 @@ const FetchPosts: React.FC<FetchPostsProps> = ({ refreshPosts }) => {
 
   const fetchPosts = async () => {
     const res = await fetch("/api/posts");
-    const data = await res.json();
+    const data = await res?.json();
     setPosts(data);
   };
 
@@ -54,6 +54,8 @@ const FetchPosts: React.FC<FetchPostsProps> = ({ refreshPosts }) => {
     };
 
     socket?.emit("like", data);
+
+    console.log("like");
   };
 
   useEffect(() => {

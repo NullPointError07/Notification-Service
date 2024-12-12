@@ -19,6 +19,8 @@ const TokenNotification = () => {
     };
   }, [socket]);
 
+  console.log("all notifications", notifications);
+
   return (
     <div>
       <h2>Token Notification</h2>
